@@ -42,7 +42,12 @@ class Tesseract(OCRBackendBase):
             }
 
             if self.language:
-                keyword_arguments['l'] = self.language
+                lang = ''
+                if self.language == 'ara':
+                    lang = 'ara+eng'
+                else:
+                    lang = 'eng+ara'
+                keyword_arguments['l'] = lang
 
             environment = os.environ.copy()
             environment.update(self.environment)

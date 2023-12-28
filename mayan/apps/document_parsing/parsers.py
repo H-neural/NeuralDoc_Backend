@@ -102,8 +102,6 @@ class Parser:
                     }
                 )
 
-                # TODO: IMPLEMENT ELASICSEARCH INDEXING
-
             except Exception as exception:
                 error_message = _('Exception parsing page; %s') % exception
                 logger.error(error_message, exc_info=True)

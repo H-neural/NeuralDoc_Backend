@@ -14,6 +14,12 @@ from .literals import (
 
 logger = logging.getLogger(name=__name__)
 
+# TODO: Implement (Eng+Ara) OCR with two arabic packages and append english
+"""
+    The order of languages do matter, (ara+eng) is not equivalent to (eng+ara)
+    The first language is the primary language, and the second is the secondary language
+"""
+
 
 class Tesseract(OCRBackendBase):
     def __init__(self, *args, **kwargs):

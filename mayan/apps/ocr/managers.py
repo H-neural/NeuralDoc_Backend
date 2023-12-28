@@ -5,6 +5,7 @@ from django.db import models
 
 from mayan.apps.converter.settings import setting_image_generation_timeout
 from mayan.apps.lock_manager.backends.base import LockingBackend
+from mayan.apps.haystack.methods import method_send_ocr_to_elastic_db
 
 from .classes import OCRBackendBase
 from .events import (
@@ -80,6 +81,9 @@ class DocumentVersionPageOCRContentManager(models.Manager):
                                 'content': ocr_content
                             }
                         )
+                        # NOTE: I think ocr should be sent to haystack here.
+                        method_send_ocr_to_elastic_db(ocr_content)
+
                         document_version_page.error_log.all().delete()
             except Exception as exception:
                 logger.error(

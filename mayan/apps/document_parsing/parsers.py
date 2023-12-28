@@ -102,6 +102,8 @@ class Parser:
                     }
                 )
 
+                # TODO: IMPLEMENT ELASICSEARCH INDEXING
+
             except Exception as exception:
                 error_message = _('Exception parsing page; %s') % exception
                 logger.error(error_message, exc_info=True)
@@ -125,6 +127,7 @@ class PopplerParser(Parser):
     """
     PDF parser using the pdftotext execute from the poppler package.
     """
+
     def __init__(self):
         self.pdftotext_path = setting_pdftotext_path.value
         if not os.path.exists(self.pdftotext_path):

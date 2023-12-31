@@ -1,4 +1,4 @@
-__title__ = 'Mayan EDMS'
+__title__ = 'Neural Doc'
 __version__ = '4.5.8'
 __build__ = 0x040508
 __build_string__ = 'v4.5.8_Thu Dec 7 03:42:42 2023 -0400'

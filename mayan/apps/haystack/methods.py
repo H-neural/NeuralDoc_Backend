@@ -1,12 +1,12 @@
 import logging
 import requests
-from io import BytesIO
 import tempfile
 from django.core.files import File
 
 logger = logging.getLogger(name=__name__)
 
 HAYSTACK_BASE_URL = "http://47.254.178.132:8000"
+file_upload_url = HAYSTACK_BASE_URL + "/file-upload"
 
 
 def text_to_file(text):
@@ -34,6 +34,7 @@ def method_send_ocr_to_elastic_db(content):
         file_upload_url = HAYSTACK_BASE_URL + "/file-upload"
         response = requests.post(file_upload_url, headers=headers, data=data, files=files)
 
+        print(response)
         response.raise_for_status()
         logger.info('Successfully uploaded file to Elasticsearch database')
 

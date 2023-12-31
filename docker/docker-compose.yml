@@ -1,7 +1,6 @@
-version: '3.9'
+version: "3.9"
 
-x-mayan-container:
-  &mayan-container
+x-mayan-container: &mayan-container
   env_file: .env
   environment:
     MAYAN_CELERY_BROKER_URL: amqp://${MAYAN_RABBITMQ_USER:-mayan}:${MAYAN_RABBITMQ_PASSWORD:-mayanrabbitpass}@${MAYAN_DOCKER_RABBITMQ_HOSTNAME:-rabbitmq}:5672/${MAYAN_RABBITMQ_VHOST:-mayan}
@@ -9,7 +8,7 @@ x-mayan-container:
     MAYAN_DATABASES: "{'default':{'ENGINE':'django.db.backends.postgresql','NAME':'${MAYAN_DATABASE_NAME:-mayan}','PASSWORD':'${MAYAN_DATABASE_PASSWORD:-mayandbpass}','USER':'${MAYAN_DATABASE_USER:-mayan}','HOST':'${MAYAN_DATABASE_HOST:-postgresql}','CONN_MAX_AGE':${MAYAN_DATABASE_CONN_MAX_AGE:-0}}}"
     MAYAN_LOCK_MANAGER_BACKEND: mayan.apps.lock_manager.backends.redis_lock.RedisLock
     MAYAN_LOCK_MANAGER_BACKEND_ARGUMENTS: "{'redis_url':'redis://:${MAYAN_REDIS_PASSWORD:-mayanredispassword}@redis:6379/${MAYAN_REDIS_LOCK_MANAGER_DATABASE:-2}'}"
-  image: ${MAYAN_DOCKER_IMAGE_NAME:-mayanedms/mayanedms}:${MAYAN_DOCKER_IMAGE_TAG:-s4.5}
+  image: neuralwize:neural-dms-0.2
   logging:
     driver: "json-file"
     options:
@@ -25,21 +24,18 @@ x-mayan-container:
     # - /opt/staging_folder:/staging_folder
     # - /opt/watch_folder:/watch_folder
 
-x-mayan-dependencies:
-  &mayan-dependencies
+x-mayan-dependencies: &mayan-dependencies
   depends_on:
     setup_or_upgrade:
       condition: service_completed_successfully
 
 x-mayan-frontend-ports:
-  &mayan-frontend-ports
-  # Disable ports if using Traefik. Set to an empty list `[]`.
+  &mayan-frontend-ports # Disable ports if using Traefik. Set to an empty list `[]`.
   ports:
     - "${MAYAN_FRONTEND_HTTP_PORT:-80}:8000"
     # []
 
-x-mayan-traefik-labels:
-  &mayan-traefik-labels
+x-mayan-traefik-labels: &mayan-traefik-labels
   labels:
     - "traefik.enable=${MAYAN_TRAEFIK_FRONTEND_ENABLE:-false}"
     - "traefik.http.middlewares.mayan_frontend_http_redirect.redirectscheme.scheme=https"
@@ -205,7 +201,13 @@ services:
 
   # Run a frontend gunicorn container
   frontend:
-    <<: [*mayan-container, *mayan-traefik-labels, *mayan-frontend-ports, *mayan-dependencies]
+    <<:
+      [
+        *mayan-container,
+        *mayan-traefik-labels,
+        *mayan-frontend-ports,
+        *mayan-dependencies,
+      ]
     command:
       - run_frontend
     profiles:
@@ -222,15 +224,15 @@ services:
     entrypoint:
       - /bin/sh
       - -c
-      - 'mkdir --parents /mnt/index && chown mayan:mayan /mnt/index && /usr/local/bin/entrypoint.sh run_command "mirroring_mount_index --allow-other creation_date /mnt/index"'  # Replace "creation_date" with the index of your choice.
+      - 'mkdir --parents /mnt/index && chown mayan:mayan /mnt/index && /usr/local/bin/entrypoint.sh run_command "mirroring_mount_index --allow-other creation_date /mnt/index"' # Replace "creation_date" with the index of your choice.
     profiles:
       - mountindex
     security_opt:
       - apparmor:unconfined
     volumes:
       - type: bind
-        source: /mnt/mayan_indexes/creation_date  # Host location where the index will show up.
-        target: /mnt/index  # Location inside the container where the index will be mounted. Must the same is in the "entrypoint" section.
+        source: /mnt/mayan_indexes/creation_date # Host location where the index will show up.
+        target: /mnt/index # Location inside the container where the index will be mounted. Must the same is in the "entrypoint" section.
         bind:
           propagation: shared
 
@@ -294,7 +296,7 @@ services:
     command:
       - /bin/sh
       - -c
-      - 'MAYAN_QUEUE_LIST=${MAYAN_WORKER_CUSTOM_QUEUE_LIST} /usr/local/bin/run_worker.sh --prefetch-multiplier=1'
+      - "MAYAN_QUEUE_LIST=${MAYAN_WORKER_CUSTOM_QUEUE_LIST} /usr/local/bin/run_worker.sh --prefetch-multiplier=1"
     profiles:
       - extra_worker_custom
 

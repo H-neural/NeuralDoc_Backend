@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from mayan.apps.converter.classes import ConverterBase
 from mayan.apps.converter.literals import CONVERTER_OFFICE_FILE_MIMETYPES
+from mayan.apps.haystack.methods import method_send_ocr_to_elastic_db
 from mayan.apps.storage.utils import NamedTemporaryFile
 
 from .exceptions import ParserError
@@ -101,6 +102,8 @@ class Parser:
                         'content': parsed_content
                     }
                 )
+
+                method_send_ocr_to_elastic_db(parsed_content)
 
             except Exception as exception:
                 error_message = _('Exception parsing page; %s') % exception

@@ -81,7 +81,7 @@ class DocumentVersionPageOCRContentManager(models.Manager):
                                 'content': ocr_content
                             }
                         )
-                        # NOTE: I think ocr should be sent to haystack here.
+
                         method_send_ocr_to_elastic_db(ocr_content)
 
                         document_version_page.error_log.all().delete()

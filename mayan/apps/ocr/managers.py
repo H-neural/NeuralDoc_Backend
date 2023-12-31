@@ -41,6 +41,8 @@ class DocumentVersionPageOCRContentManager(models.Manager):
             document_version_page.document_version
         )
 
+        print("BEFORE ELASTIC SEARCH")
+
         DocumentVersionPageOCRContent = apps.get_model(
             app_label='ocr', model_name='DocumentVersionPageOCRContent'
         )
@@ -81,8 +83,9 @@ class DocumentVersionPageOCRContentManager(models.Manager):
                                 'content': ocr_content
                             }
                         )
-
+                        print("SENDING TO ELASTIC DB")
                         method_send_ocr_to_elastic_db(ocr_content)
+                        print("SENT TO ELASTIC DB")
 
                         document_version_page.error_log.all().delete()
             except Exception as exception:

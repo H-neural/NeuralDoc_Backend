@@ -84,9 +84,9 @@ class DependenciesApp(MayanAppConfig):
         )
 
         # Position #7 which is after "License" link.
-        menu_about.bind_links(
-            links=(link_packages_licenses,), position=7
-        )
+        # menu_about.bind_links(
+        #     links=(link_packages_licenses,), position=7
+        # )
         menu_list_facet.bind_links(
             links=(link_dependency_group_entry_list,),
             sources=(DependencyGroup,)

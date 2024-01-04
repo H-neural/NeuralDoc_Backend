@@ -25,7 +25,7 @@ class CheckVersionView(SimpleView):
                 PyPIClient().check_version_verbose(),
                 _(
                     'This process only checks the Python component of '
-                    'Mayan EDMS.'
+                    'Neural Doc.'
                 ),
                 _(
                     'It does not verify versions of other '
